@@ -7,7 +7,6 @@ def adivinhacao():
     print(f'Olá {nome}')
 
     numero = random.randint(0, 100)
-    print(numero)
 
 
     while True:
