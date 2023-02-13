@@ -23,3 +23,9 @@ arquivo_spaceship_titanic_train = open('4 - Arquivos/Lendo_arquivos_IO/spaceship
 for linha in arquivo_spaceship_titanic_train:
     print(linha,end='')
 '''
+#Lendo Arquivo
+'''
+
+arquivo_contatos = open('4 - Arquivos/Lendo_arquivos_IO/spaceship_titanic_train_escrita.csv',mode='w')
+
+'''
