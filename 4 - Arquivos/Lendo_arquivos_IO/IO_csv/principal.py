@@ -31,9 +31,9 @@ arquivo_contatos = open('4 - Arquivos/Lendo_arquivos_IO/spaceship_titanic_train_
 '''
 
 #Método 3
-'''
-#Leitura com try-except
 
+#Leitura com try-except
+'''
 try:
     with open('4 - Arquivos/Lendo_arquivos_IO/IO_csv/spaceship_titanic_train_escrita.csv', encoding='latin_1') as titanic_csv:
         for linha in titanic_csv:
