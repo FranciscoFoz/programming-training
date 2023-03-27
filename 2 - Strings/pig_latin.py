@@ -22,8 +22,7 @@ def pig_latin(word):
 
     return f'{word[1:]}{word[0]}ay'
 
-palavras  = ['eat','car','computer','love','peace','hippie','WINE','Wind','YESTERDAY']
+palavras  = ['eat','car','computer','love','peace','hippie','WINE','Wind','YESTERDAY','test']
 
 for palavra in palavras:
     print(pig_latin(palavra))
-
