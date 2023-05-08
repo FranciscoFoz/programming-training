@@ -2,6 +2,7 @@
 '''
 Essa função irá receber uma lista de elementos numéricos e irá somar os elementos de índice par 
 e subtrair os elementos de índice ímpar.
+
 '''
 
 def soma_subtracao_alternada(numeros):
