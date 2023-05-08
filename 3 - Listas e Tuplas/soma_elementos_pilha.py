@@ -4,7 +4,7 @@ Essa função irá receber uma lista de elementos numéricos e retornará uma im
 ímpares.
 '''
 
-def primeiro_ultimo(x):
+def soma_elementos_pilha(x):
     
     elementos_pares = []
     elementos_impares = []
@@ -20,9 +20,9 @@ def primeiro_ultimo(x):
     
     return print(f'Soma elementos pares: {soma_pares}\nSoma elementos impares: {soma_impares}')
 
-primeiro_ultimo([10,10,10,5,5,5])
+soma_elementos_pilha([10,10,10,5,5,5])
 print(10*'-')
-primeiro_ultimo([1,2,3,4,5,6])
+soma_elementos_pilha([1,2,3,4,5,6])
 print(10*'-')
-primeiro_ultimo(range(1,101))
+soma_elementos_pilha(range(1,101))
 print(10*'-')
