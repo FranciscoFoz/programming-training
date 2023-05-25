@@ -1,8 +1,13 @@
+#INTRODUÇÃO TWEEPY
 
 import tweepy
+import json
+
+with open('/home/franciscofoz/Documents/credentials_twitter.json') as arquivo:
+    credenciais = json.load(arquivo)
 
 
-bearer_token = "AAAAAAAAAAAAAAAAAAAAAGyzlQEAAAAAnqeH9Wvqr7phCkm%2FJ3fZ4%2FVlciQ%3DQSAqwplfZ0kXj9JE8EYr5i4WmjDKn0IQYXM0QPLOzK0XIl4TQp"
+bearer_token = credenciais['bearer_token']
 client = tweepy.Client(bearer_token)
 
 user_ids = [914378883763441664]
