@@ -15,6 +15,61 @@ user_id = 914378883763441664
 
 termo_de_busca = 'biblioteconomia'
 
+
+results_per_request = 10 
+total_tweets = 40
+
+data_ultimos_tweets = []
+
+while total_tweets < 40:
+    tweets = client.search_recent_tweets(
+        termo_de_busca,
+        expansions=['author_id'],
+        tweet_fields=['created_at'],
+        max_results=results_per_request
+    )
+
+    for tweet in tweets.data:
+        # Obter o nome do usuário
+        users = client.get_user(id=tweet.author_id).data
+
+        print(f'USERNAME: {users}')
+        print(f'Data/Hora: {tweet.created_at.date()} {tweet.created_at.time()}')
+        print(f'TWEET ID: {tweet.id}')
+        print(f'TWEET: {tweet.text}')
+        print(f'Nº TWEET: {total_tweets + 1}')
+
+        print(f'DATA: {tweet.created_at}')
+        print('-' * 20)
+
+        data_ultimos_tweets.append(tweet.created_at) 
+
+        total_tweets += 1
+
+        if total_tweets >= 40:
+            break
+
+    # Obtém a data do último tweet da lista para usar como ponto de partida para a próxima requisição
+    data_ultimos_tweets = min(data_ultimos_tweets)
+
+    # Define a data mínima para buscar tweets posteriores à última data
+    data_min = data_ultimos_tweets + timedelta(seconds=1)
+
+    # Define os parâmetros para buscar os próximos tweets com base na última data
+    query_params = {
+        "query": "Biblioteconomia",
+        "expansions": ["author_id"],
+        "tweet_fields": ["created_at"],
+        "max_results": results_per_request,
+        "end_time": data_min.isoformat()
+    }
+
+    # Realiza a próxima requisição de tweets
+    tweets = client.search_recent_tweets(**query_params)
+    
+# CONTINUAR REFATORANDO
+
+
 tweets = client.search_recent_tweets(termo_de_busca, expansions=['author_id'],tweet_fields=['created_at'],max_results=100)
 
 tweet_data = []
@@ -47,3 +102,4 @@ output_file = caminho + nome_do_arquivo
 df.to_csv(output_file, index=False)
 
 print(f'Tweets salvos em: {output_file}')
+
