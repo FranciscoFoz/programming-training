@@ -2,7 +2,7 @@
 
 import json
 import tweepy
-from datetime import datetime
+from datetime import datetime, timedelta
 import pandas as pd
 
 with open('/home/franciscofoz/Documents/credentials_twitter.json') as arquivo:
@@ -13,80 +13,59 @@ client = tweepy.Client(bearer_token)
 
 user_id = 914378883763441664
 
-termo_de_busca = 'biblioteconomia'
+string_de_busca = 'biblioteconomia'
 
+resultados_por_requisicao = 10  
+total_tweets = 0
 
-results_per_request = 10 
-total_tweets = 40
+datas_ultimos_tweets = []
 
-data_ultimos_tweets = []
-
-while total_tweets < 40:
+while total_tweets < 100:
     tweets = client.search_recent_tweets(
-        termo_de_busca,
+        string_de_busca,
         expansions=['author_id'],
         tweet_fields=['created_at'],
-        max_results=results_per_request
+        max_results=resultados_por_requisicao
     )
 
+    tweet_data = []
+
+    # Cada objeto Tweet tem os campos padrão ID e text
     for tweet in tweets.data:
         # Obter o nome do usuário
         users = client.get_user(id=tweet.author_id).data
 
-        print(f'USERNAME: {users}')
-        print(f'Data/Hora: {tweet.created_at.date()} {tweet.created_at.time()}')
-        print(f'TWEET ID: {tweet.id}')
-        print(f'TWEET: {tweet.text}')
-        print(f'Nº TWEET: {total_tweets + 1}')
+        username = users.name
+        date = tweet.created_at.date()
+        time = tweet.created_at.time()
+        tweet_id = tweet.id
+        tweet_text = tweet.text
 
-        print(f'DATA: {tweet.created_at}')
-        print('-' * 20)
-
-        data_ultimos_tweets.append(tweet.created_at) 
-
+        tweet_data.append([username, date, time, tweet_id, tweet_text])
+        datas_ultimos_tweets.append(tweet.created_at)  
+        
         total_tweets += 1
 
-        if total_tweets >= 40:
+        if total_tweets >= 400:
             break
 
     # Obtém a data do último tweet da lista para usar como ponto de partida para a próxima requisição
-    data_ultimos_tweets = min(data_ultimos_tweets)
+    data_ultimos_tweet = min(datas_ultimos_tweets)
 
-    # Define a data mínima para buscar tweets posteriores à última data
-    data_min = data_ultimos_tweets + timedelta(seconds=1)
+    data_minima = data_ultimos_tweet + timedelta(seconds=1)
 
     # Define os parâmetros para buscar os próximos tweets com base na última data
-    query_params = {
-        "query": "Biblioteconomia",
+    params = {
+        "query": "string_de_busca",
         "expansions": ["author_id"],
         "tweet_fields": ["created_at"],
-        "max_results": results_per_request,
-        "end_time": data_min.isoformat()
+        "max_results": resultados_por_requisicao,
+        "end_time": data_minima.isoformat()
     }
 
     # Realiza a próxima requisição de tweets
-    tweets = client.search_recent_tweets(**query_params)
+    tweets = client.search_recent_tweets(**params)
     
-# CONTINUAR REFATORANDO
-
-
-tweets = client.search_recent_tweets(termo_de_busca, expansions=['author_id'],tweet_fields=['created_at'],max_results=100)
-
-tweet_data = []
-
-# Cada objeto Tweet tem os campos padrão ID e text
-for tweet in tweets.data:
-    # Obter o nome do usuário
-    users = client.get_user(id=tweet.author_id).data
-
-    username = users.name
-    date = tweet.created_at.date()
-    time = tweet.created_at.time()
-    tweet_id = tweet.id
-    tweet_text = tweet.text
-
-    tweet_data.append([username, date, time, tweet_id, tweet_text])
-
 # Criar um DataFrame do Pandas com os dados dos tweets
 df = pd.DataFrame(tweet_data, columns=['Username', 'Date', 'Time', 'Tweet ID', 'Tweet'])
 
@@ -94,7 +73,7 @@ df = pd.DataFrame(tweet_data, columns=['Username', 'Date', 'Time', 'Tweet ID', '
 data_atual = datetime.now().date().isoformat().replace('-','')
 
 caminho = '/home/franciscofoz/Documents/GitHub/python-training/12 - Pacotes Python/tweepy/tweets_csv'
-nome_do_arquivo = f'/tweets_{termo_de_busca}_{data_atual}.csv'
+nome_do_arquivo = f'/tweets_{string_de_busca}_{data_atual}.csv'
 output_file = caminho + nome_do_arquivo
 
 
@@ -102,4 +81,6 @@ output_file = caminho + nome_do_arquivo
 df.to_csv(output_file, index=False)
 
 print(f'Tweets salvos em: {output_file}')
+
+
 
