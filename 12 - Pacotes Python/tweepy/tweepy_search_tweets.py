@@ -12,18 +12,19 @@ client = tweepy.Client(bearer_token)
 
 user_id = 914378883763441664
 
+string_de_busca = 'biblioteconomia -is:retweet'
 
-results_per_request = 10 
-total_tweets = 40
+resultados_por_requisicao = 30  
+total_tweets = 0
 
-data_ultimos_tweets = []
+datas_ultimos_tweets = []
 
-while total_tweets < 40:
+while total_tweets < 30:
     tweets = client.search_recent_tweets(
-        "Biblioteconomia",
+        string_de_busca,
         expansions=['author_id'],
         tweet_fields=['created_at'],
-        max_results=results_per_request
+        max_results=resultados_por_requisicao
     )
 
     for tweet in tweets.data:
@@ -37,29 +38,28 @@ while total_tweets < 40:
         print(f'Nº TWEET: {total_tweets + 1}')
 
         print(f'DATA: {tweet.created_at}')
-        print('-' * 20)
+        print('-' * 30)
 
-        data_ultimos_tweets.append(tweet.created_at) 
+        datas_ultimos_tweets.append(tweet.created_at)  
 
         total_tweets += 1
 
-        if total_tweets >= 40:
+        if total_tweets >= 30:
             break
 
     # Obtém a data do último tweet da lista para usar como ponto de partida para a próxima requisição
-    data_ultimos_tweets = min(data_ultimos_tweets)
+    data_ultimos_tweet = min(datas_ultimos_tweets)
 
-    # Define a data mínima para buscar tweets posteriores à última data
-    data_min = data_ultimos_tweets + timedelta(seconds=1)
+    data_minima = data_ultimos_tweet + timedelta(seconds=1)
 
     # Define os parâmetros para buscar os próximos tweets com base na última data
-    query_params = {
-        "query": "Biblioteconomia",
+    params = {
+        "query": "string_de_busca",
         "expansions": ["author_id"],
         "tweet_fields": ["created_at"],
-        "max_results": results_per_request,
-        "end_time": data_min.isoformat()
+        "max_results": resultados_por_requisicao,
+        "end_time": data_minima.isoformat()
     }
 
     # Realiza a próxima requisição de tweets
-    tweets = client.search_recent_tweets(**query_params)
+    tweets = client.search_recent_tweets(**params)
