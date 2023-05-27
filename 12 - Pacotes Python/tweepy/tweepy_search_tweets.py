@@ -10,7 +10,6 @@ with open('/home/franciscofoz/Documents/credentials_twitter.json') as arquivo:
 bearer_token = credenciais['bearer_token']
 client = tweepy.Client(bearer_token)
 
-user_id = 914378883763441664
 
 string_de_busca = 'biblioteconomia -is:retweet'
 
@@ -54,7 +53,7 @@ while total_tweets < 30:
 
     # Define os parâmetros para buscar os próximos tweets com base na última data
     params = {
-        "query": "string_de_busca",
+        "query": "Biblioteconomia",
         "expansions": ["author_id"],
         "tweet_fields": ["created_at"],
         "max_results": resultados_por_requisicao,

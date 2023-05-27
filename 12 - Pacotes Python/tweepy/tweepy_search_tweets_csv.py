@@ -20,7 +20,7 @@ total_tweets = 0
 
 datas_ultimos_tweets = []
 
-while total_tweets < 100:
+while total_tweets < 200:
     tweets = client.search_recent_tweets(
         string_de_busca,
         expansions=['author_id'],
@@ -46,7 +46,7 @@ while total_tweets < 100:
         
         total_tweets += 1
 
-        if total_tweets >= 400:
+        if total_tweets >= 200:
             break
 
     # Obtém a data do último tweet da lista para usar como ponto de partida para a próxima requisição
