@@ -2,7 +2,7 @@
 
 import json
 import tweepy
-from datetime import datetime
+from datetime import datetime, timedelta
 
 with open('/home/franciscofoz/Documents/credentials_twitter.json') as arquivo:
     credenciais = json.load(arquivo)
@@ -12,22 +12,54 @@ client = tweepy.Client(bearer_token)
 
 user_id = 914378883763441664
 
-tweets = client.search_recent_tweets("Biblioteconomia", expansions=['author_id'],tweet_fields=['created_at'])
-# Cada objeto Tweet tem os campos padrão ID e text
-for tweet in tweets.data:
-    # Obter o nome do usuário
-    users = client.get_user(id=tweet.author_id).data
-    
-    print(f'USERNAME: {users}')
-    print(f'Data/Hora: {tweet.created_at.date()} {tweet.created_at.time()}')
-    print(f'TWEET ID: {tweet.id}')
-    print(f'TWEET: {tweet.text}')
-    
-    # Verificar se o tweet possui localização
-    if 'place' in tweet:
-        place = tweet.place
-        print(f'PLACE: {place}')
-    else:
-        print(f'PLACE: NOT')
-    print('-'*20)
-    
+
+results_per_request = 10 
+total_tweets = 40
+
+data_ultimos_tweets = []
+
+while total_tweets < 40:
+    tweets = client.search_recent_tweets(
+        "Biblioteconomia",
+        expansions=['author_id'],
+        tweet_fields=['created_at'],
+        max_results=results_per_request
+    )
+
+    for tweet in tweets.data:
+        # Obter o nome do usuário
+        users = client.get_user(id=tweet.author_id).data
+
+        print(f'USERNAME: {users}')
+        print(f'Data/Hora: {tweet.created_at.date()} {tweet.created_at.time()}')
+        print(f'TWEET ID: {tweet.id}')
+        print(f'TWEET: {tweet.text}')
+        print(f'Nº TWEET: {total_tweets + 1}')
+
+        print(f'DATA: {tweet.created_at}')
+        print('-' * 20)
+
+        data_ultimos_tweets.append(tweet.created_at) 
+
+        total_tweets += 1
+
+        if total_tweets >= 40:
+            break
+
+    # Obtém a data do último tweet da lista para usar como ponto de partida para a próxima requisição
+    data_ultimos_tweets = min(data_ultimos_tweets)
+
+    # Define a data mínima para buscar tweets posteriores à última data
+    data_min = data_ultimos_tweets + timedelta(seconds=1)
+
+    # Define os parâmetros para buscar os próximos tweets com base na última data
+    query_params = {
+        "query": "Biblioteconomia",
+        "expansions": ["author_id"],
+        "tweet_fields": ["created_at"],
+        "max_results": results_per_request,
+        "end_time": data_min.isoformat()
+    }
+
+    # Realiza a próxima requisição de tweets
+    tweets = client.search_recent_tweets(**query_params)
