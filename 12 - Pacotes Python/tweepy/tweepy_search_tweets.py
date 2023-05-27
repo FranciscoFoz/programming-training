@@ -11,13 +11,13 @@ bearer_token = credenciais['bearer_token']
 client = tweepy.Client(bearer_token)
 
 
-string_de_busca = 'biblioteconomia -is:retweet'
+string_de_busca = '#Biblioteconomia'
 
 tweets = client.search_recent_tweets(
     string_de_busca,
     expansions=['author_id'],
     tweet_fields=['created_at'],
-    max_results=10
+    max_results=100
 )
 
 total_tweets = 0
@@ -28,7 +28,7 @@ for tweet in tweets.data:
     
     tweet_datetime_brasilia = tweet_datetime + brasilia_offset
     
-    # Obter o nome do usuário
+    # Obter o nome do usuário do tweet
     users = client.get_user(id=tweet.author_id).data
     print(f'USERNAME: @{users}')
     print(f'NOME: {users.name}')
@@ -40,7 +40,4 @@ for tweet in tweets.data:
     print('-' * 30)
     
     total_tweets += 1
-    
-
-# Data da API do Twitter em UTC
 

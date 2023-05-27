@@ -11,120 +11,56 @@ with open('/home/franciscofoz/Documents/credentials_twitter.json') as arquivo:
 bearer_token = credenciais['bearer_token']
 client = tweepy.Client(bearer_token)
 
-resultados_por_requisicao = 30  
-total_tweets = 0
+string_de_busca = '#Biblioteconomia'
 
-datas_ultimos_tweets = []
+tweets = client.search_recent_tweets(
+    string_de_busca,
+    expansions=['author_id'],
+    tweet_fields=['created_at'],
+    max_results=100
+)
 
-while total_tweets < 30:
-    tweets = client.search_recent_tweets(
-        string_de_busca,
-        expansions=['author_id'],
-        tweet_fields=['created_at'],
-        max_results=resultados_por_requisicao
-    )
+tweet_data = []
 
-    for tweet in tweets.data:
-        # Obter o nome do usuário
-        users = client.get_user(id=tweet.author_id).data
-
-        print(f'USERNAME: {users}')
-        print(f'Data/Hora: {tweet.created_at.date()} {tweet.created_at.time()}')
-        print(f'TWEET ID: {tweet.id}')
-        print(f'TWEET: {tweet.text}')
-        print(f'Nº TWEET: {total_tweets + 1}')
-
-        print(f'DATA: {tweet.created_at}')
-        print('-' * 30)
-
-        datas_ultimos_tweets.append(tweet.created_at)  
-
-        total_tweets += 1
-
-        if total_tweets >= 30:
-            break
-
-    # Obtém a data do último tweet da lista para usar como ponto de partida para a próxima requisição
-    data_ultimos_tweet = min(datas_ultimos_tweets)
-
-    data_minima = data_ultimos_tweet + timedelta(seconds=1)
-
-    # Define os parâmetros para buscar os próximos tweets com base na última data
-    params = {
-        "query": "Biblioteconomia",
-        "expansions": ["author_id"],
-        "tweet_fields": ["created_at"],
-        "max_results": resultados_por_requisicao,
-        "end_time": data_minima.isoformat()
-    }
-
-    # Realiza a próxima requisição de tweets
-    tweets = client.search_recent_tweets(**params)
-
-
-string_de_busca = 'biblioteconomia'
-
-resultados_por_requisicao = 10  
-total_tweets = 0
-
-datas_ultimos_tweets = []
-
-while total_tweets < 100:
-    tweets = client.search_recent_tweets(
-        string_de_busca,
-        expansions=['author_id'],
-        tweet_fields=['created_at'],
-        max_results=resultados_por_requisicao
-    )
-
-    tweet_data = []
-
-    # Cada objeto Tweet tem os campos padrão ID e text
-    for tweet in tweets.data:
-        # Obter o nome do usuário
-        users = client.get_user(id=tweet.author_id).data
-
-        username = users.name
-        date = tweet.created_at.date()
-        time = tweet.created_at.time()
-        tweet_id = tweet.id
-        tweet_text = tweet.text
-
-        tweet_data.append([username, date, time, tweet_id, tweet_text])
-        datas_ultimos_tweets.append(tweet.created_at)  
-        
-        total_tweets += 1
-
-        if total_tweets >= 100:
-            break
-
-    # Obtém a data do último tweet da lista para usar como ponto de partida para a próxima requisição
-    data_ultimos_tweet = min(datas_ultimos_tweets)
-
-    data_minima = data_ultimos_tweet + timedelta(seconds=1)
-
-    # Define os parâmetros para buscar os próximos tweets com base na última data
-    params = {
-        "query": string_de_busca,
-        "expansions": ["author_id"],
-        "tweet_fields": ["created_at"],
-        "max_results": resultados_por_requisicao,
-        "end_time": data_minima.isoformat()
-    }
-
-    # Realiza a próxima requisição de tweets
-    tweets = client.search_recent_tweets(**params)
+for tweet in tweets.data:
+    tweet_datetime = datetime.strptime(str(tweet.created_at), "%Y-%m-%d %H:%M:%S%z")
+    brasilia_offset = timedelta(hours=-3)
     
-# Criar um DataFrame do Pandas com os dados dos tweets
-df = pd.DataFrame(tweet_data, columns=['Username', 'Date', 'Time', 'Tweet ID', 'Tweet'])
+    tweet_datetime_brasilia = tweet_datetime + brasilia_offset
+    
+    # Obter o nome do usuário do tweet
+    users = client.get_user(id=tweet.author_id).data
+    username = f'@{users}'
+    username_name  = users.name
+    
+    date_brasilia = tweet_datetime_brasilia.date()
+    hora_brasilia = tweet_datetime_brasilia.time()
+    tweet_id = tweet.id
+    tweet_text = tweet.text
+    date_GMT = tweet_datetime.date()
+    hora_GMT = tweet_datetime.time()
+
+
+    tweet_data.append([username,username_name, date_brasilia, hora_brasilia, tweet_id, tweet_text,date_GMT,hora_GMT])
+    
+   
+df = pd.DataFrame(tweet_data, 
+                  columns=['username',
+                           'username_name',
+                           'date_brasilia', 
+                           'hora_brasilia', 
+                           'tweet_id', 
+                           'tweet_text',
+                           'date_GMT',
+                           'hora_GMT'])
 
 # Adicionar a data atual ao nome do arquivo CSV
 data_atual = datetime.now().date().isoformat().replace('-','')
 
 caminho = '/home/franciscofoz/Documents/GitHub/python-training/12 - Pacotes Python/tweepy/tweets_csv'
-nome_do_arquivo = f'/tweets_{string_de_busca}_{data_atual}.csv'
+string_de_busca_formatado = string_de_busca.replace(' ','')
+nome_do_arquivo = f'/tweets_{string_de_busca_formatado}_{data_atual}.csv'
 output_file = caminho + nome_do_arquivo
-
 
 # Salvar o DataFrame em um arquivo CSV
 df.to_csv(output_file, index=False)
