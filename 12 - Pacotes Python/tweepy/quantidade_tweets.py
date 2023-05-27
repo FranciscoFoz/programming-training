@@ -12,7 +12,7 @@ bearer_token = credenciais['bearer_token']
 client = tweepy.Client(bearer_token)
 
 
-string_de_busca = "biblioteconomia"
+string_de_busca = input('Digite sua string de busca:')
 
 response = client.get_recent_tweets_count(string_de_busca, granularity="day")
 
@@ -30,7 +30,10 @@ df_tweets_data = pd.DataFrame(dicionario_tweets_data)
 total = df_tweets_data['quantidade'].sum()
 df_tweets_data['percentual'] = round(df_tweets_data['quantidade'].div(total) * 100,1)
 
-print(df_tweets_data)
-print(f'TOTAL={total}')
+print('-'*60)
+print(f'String de busca: {string_de_busca}\n')
+print(df_tweets_data,'\n')
+print(f'TOTAL={total}\n')
+print('-'*60)
 
     
