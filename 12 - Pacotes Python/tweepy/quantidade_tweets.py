@@ -5,13 +5,14 @@ import tweepy
 from datetime import datetime, timedelta
 import pandas as pd
 
+# AUTENTICANDO CREDENCIAIS
 with open('/home/franciscofoz/Documents/credentials_twitter.json') as arquivo:
     credenciais = json.load(arquivo)
 
 bearer_token = credenciais['bearer_token']
 client = tweepy.Client(bearer_token)
 
-
+# REALIZANDO BUSCA
 string_de_busca = input('Digite sua string de busca:')
 
 response = client.get_recent_tweets_count(string_de_busca, granularity="day")
@@ -25,8 +26,9 @@ for count in response.data:
     dicionario_tweets_data['data'].append(tweet_start)
     dicionario_tweets_data['quantidade'].append(quantidade)
     
-
+# CRIANDO DATAFRAME
 df_tweets_data = pd.DataFrame(dicionario_tweets_data)
+# OBTENDO PERCENTUAL
 total = df_tweets_data['quantidade'].sum()
 df_tweets_data['percentual'] = round(df_tweets_data['quantidade'].div(total) * 100,1)
 
