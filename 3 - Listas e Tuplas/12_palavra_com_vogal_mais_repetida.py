@@ -27,6 +27,21 @@ for palavra in palavras:
 
 print(f'\n----> A palavra que tem a vogal que mais repete é: {palavra_com_letras_que_mais_repetem(palavras)}\n')
 
+with open('/etc/passwd', 'r') as passwd_file:
+    lines = passwd_file.readlines()
+
+for line in lines:
+    fields = line.split(':')
+    username = fields[0]
+    user_id = fields[2]
+    home_directory = fields[5]
+    shell = fields[6]
+    
+    print("Username: ", username)
+    print("User ID: ", user_id)
+    print("Home Directory: ", home_directory)
+    print("Shell: ", shell)
+    print("---------------------------------")
 
         
 
