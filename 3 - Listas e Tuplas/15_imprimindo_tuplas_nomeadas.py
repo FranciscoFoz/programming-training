@@ -9,6 +9,7 @@ alinhado à direita, arredondando o tempo para duas casas decimais.
 
 #MODIFICAR PARA TUPLAS NOMEADAS
 import operator
+import collections
 pessoas = [('Donald', 'Trump', 7.85), ('Vladimir', 'Putin', 12.626), ('Jinping', 'Xi', 10.603)]
 
 
@@ -21,5 +22,12 @@ def formatar_lista_tuplas(lista_de_tuplas):
         print(template.format(*pessoa)) # "*" desempacota a tupla
     
 
+tupla_nomeada = collections.namedtuple('Point', ['x', 'y'])
 
-formatar_lista_tuplas(pessoas)
+valores_tupla_nomeada = tupla_nomeada(x=10,y=20)
+
+print(tupla_nomeada)
+print(tupla_nomeada.__name__)
+
+print(valores_tupla_nomeada[0])
+print(valores_tupla_nomeada[1])
