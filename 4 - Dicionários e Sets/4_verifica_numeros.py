@@ -1,8 +1,8 @@
 # VERIFICA NUMEROS
 '''
-
-
-
+Crie uma função que irá percorrer um dicionário, onde cada item consiste em uma chave e um valor.
+Para cada valor no dicionário, a função verifica se é uma string.
+Se for uma string, a função procede a verificar diferentes características desse valor:
 
 '''
 
