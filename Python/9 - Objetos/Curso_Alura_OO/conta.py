@@ -8,22 +8,17 @@ class Conta:
         self.titular = titular
         self.saldo = saldo
         self.limite = limite
-
-conta = Conta(123,'Francisco',55.5,1000.0)
-conta.saldo
-
-conta2 = Conta(124,'Tadeu',65.0,1000.0)
-
-def cria_conta(numero, titular, saldo, limite):
-   conta = {'numero': numero, 'titular': titular, 'saldo': saldo, 'limite': limite}
-   return conta
-
-def deposita(conta, valor):
-    conta['saldo'] += valor
+        
+    def extrato(self):
+        print(f"Saldo do {self.titular} é {self.saldo}")
+        
+    def deposita(self, valor):
+        self.saldo += valor
     
+    def saca(self, valor):
+        self.saldo -= valor
 
-def saca(conta, valor):
-    conta['saldo'] -= valor
+
     
-def extrato(conta):
-    print(f"Saldo é {conta['saldo']}")
+    
+    

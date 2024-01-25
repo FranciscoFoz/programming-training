@@ -1,14 +1,12 @@
-from conta import cria_conta, deposita, saca, extrato
-
-conta = cria_conta(123,'Francisco',10.0,1000)
+import conta
 
 
-extrato(conta)
+conta = conta.Conta(123,'Francisco',55.5,1000.0)
 
-deposita(conta,9)
+conta.extrato()
 
-extrato(conta)
+conta.deposita(15)
+conta.extrato()
 
-saca(conta,1000)
-
-extrato(conta)
+conta.saca(20)
+conta.extrato()
