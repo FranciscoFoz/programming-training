@@ -14,6 +14,7 @@ int main() {
     int chute;
     int ganhou = 0;
     int tentativas = 1;
+    int pontos = 1000;
 
     char frasemotivacional[] = "Mas não desanime. Tente novamente.\n\n";
 
@@ -63,9 +64,14 @@ int main() {
 
 
         tentativas++;
+
+        int pontosperdidos = (chute - numerosecreto) / 2;
+
+        pontos = pontos - pontosperdidos;
+
         }
             
-         
+    printf("TOTAL DE PONTOS:----> %d\n",pontos);
     printf("++++++FIM DE JOGO+++++++\n\n");   
     }
 
